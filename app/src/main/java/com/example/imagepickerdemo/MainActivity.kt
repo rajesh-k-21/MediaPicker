@@ -17,13 +17,16 @@ class MainActivity : AppCompatActivity() {
     private val imagePicker = ImagePicker(
         this, PickerOptions(
             captureImageButtonIconAndText = Pair(R.drawable.ic_camera,"Open Camera"),
-            selectImageButtonIconAndText = Pair(R.drawable.ic_gallery,"Open Gallery")
+            selectImageButtonIconAndText = Pair(R.drawable.ic_gallery,"Open Gallery"),
         ),
         onResult = object : OnResult {
             override fun onResult(path: String?) {
+
+                val imageFilePath = path
+                val imageFileUri = File(path!!).toUri()
+
                 binding.imageView.apply {
-                    setImageURI(File(path!!).toUri())
-                    visibility = View.VISIBLE
+                    setImageURI(imageFileUri)
                 }
             }
         },
