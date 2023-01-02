@@ -1,7 +1,6 @@
 package com.example.imagepickerdemo
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -14,28 +13,24 @@ import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
-    private val imagePicker = ImagePicker(
-        this, PickerOptions(
-            captureImageButtonIconAndText = Pair(R.drawable.ic_camera,"Open Camera"),
-            selectImageButtonIconAndText = Pair(R.drawable.ic_gallery,"Open Gallery"),
-        ),
-        onResult = object : OnResult {
-            override fun onResult(path: String?) {
+    private val imagePicker = ImagePicker(this, PickerOptions(
+        captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Open Camera"),
+        selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Open Gallery"),
+    ), onResult = object : OnResult {
+        override fun onResult(path: String?) {
 
-                val imageFilePath = path
-                val imageFileUri = File(path!!).toUri()
+            val imageFilePath = path
+            val imageFileUri = File(path!!).toUri()
 
-                binding.imageView.apply {
-                    setImageURI(imageFileUri)
-                }
-            }
-        },
-        onError = object : OnError {
-            override fun onError(e: String?) {
-                Toast.makeText(this@MainActivity, e ?: "", Toast.LENGTH_LONG).show()
+            binding.imageView.apply {
+                setImageURI(imageFileUri)
             }
         }
-    )
+    }, onError = object : OnError {
+        override fun onError(e: String?) {
+            Toast.makeText(this@MainActivity, e ?: "", Toast.LENGTH_LONG).show()
+        }
+    })
 
     private lateinit var binding: ActivityMainBinding
 
