@@ -191,10 +191,12 @@ class ImagePickerBottomSheet(
 
     private fun initUi() = with(binding) {
 
+        imageButtonCamera.setOnClickListener { textViewCamera.performClick() }
         textViewCamera.setOnClickListener {
             clickOnCamera()
         }
 
+        imageButtonGallery.setOnClickListener { textViewGallery.performClick() }
         textViewGallery.setOnClickListener {
             clickOnGallery()
         }

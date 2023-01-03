@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     private val imagePicker = ImagePicker(this, PickerOptions(
         captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Open Camera"),
         selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Open Gallery"),
+        isCropEnable = true
     ), onResult = object : OnResult {
         override fun onResult(path: String?) {
 
