@@ -18,6 +18,8 @@
 
         <activity
             android:name="com.rktech.imagepicker.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat"
             android:exported="true" />
 
     </application>
