@@ -1,5 +1,6 @@
 package com.rktech.imagepicker
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -72,9 +73,9 @@ class ImagePicker(
             }
         }
 
-    internal val capturePhotoIntent =
+    private val capturePhotoIntent =
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (captureImagePath != null) {
+            if (it.resultCode == Activity.RESULT_OK && captureImagePath != null) {
                 if (pickerOptions.isCropEnable) {
                     imagePickerBottomSheet?.launchImageCrop(Uri.fromFile(File(captureImagePath!!)))
                 } else
