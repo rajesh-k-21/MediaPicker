@@ -23,9 +23,8 @@ Project level gradle file
 App level gradle file
 ```bash
 	dependencies {
-	        implementation 'com.github.rkahir21:ImagePicker:1.0'
+	        implementation 'com.github.rajesh-k-21:MediaPicker:1.1'
 	}
-
 ```
 
 ## Deployment
@@ -33,43 +32,62 @@ App level gradle file
 How to use this amazing lib and save your time
 
 ```bash
-     private val imagePicker = ImagePicker(
-        this, PickerOptions(
-            captureImageButtonIconAndText = Pair(R.drawable.ic_camera,"Open Camera"),
-            selectImageButtonIconAndText = Pair(R.drawable.ic_gallery,"Open Gallery")
-        ),
-        onResult = object : OnResult {
-            override fun onResult(path: String?) {
-                val imageFilePath = path
+    private val imagePicker = ImagePicker(this, PickerOptions(
+        captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Capture image"),
+        selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Select image from gallery"),
+        captureVideoButtonIconAndText = Pair(R.drawable.ic_camera, "Capture video"),
+        selectVideoButtonIconAndText = Pair(R.drawable.ic_gallery, "Select video from gallery"),
+        isCropEnable = true,
+    ), onResult = object : OnResult {
+        override fun onResult(isImage: Boolean, path: String?) {
+            if (isImage) {
                 val imageFileUri = File(path!!).toUri()
-                
                 binding.imageView.apply {
+                    visibility = View.VISIBLE
                     setImageURI(imageFileUri)
                 }
-            }
-        },
-        onError = object : OnError {
-            override fun onError(e: String?) {
-                Toast.makeText(this@MainActivity, e ?: "", Toast.LENGTH_LONG).show()
+                binding.playerView.visibility = View.GONE
+            } else {
+                binding.imageView.visibility = View.GONE
+                binding.playerView.visibility = View.VISIBLE
+                intExo(path)
             }
         }
-    )
+    }, onError = object : OnError {
+        override fun onError(e: String?) {
+            Toast.makeText(this@MainActivity, e ?: "", Toast.LENGTH_LONG).show()
+        }
+    })
 ```
 
 ```bash
 class MainActivity : AppCompatActivity() {
 
+    private var simpleExoPlayer: ExoPlayer? = null
+
+    private val mediaDataSourceFactory by lazy {
+        DefaultDataSource.Factory(this)
+    }
+
     private val imagePicker = ImagePicker(this, PickerOptions(
-        captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Open Camera"),
-        selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Open Gallery"),
+        captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Capture image"),
+        selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Select image from gallery"),
+        captureVideoButtonIconAndText = Pair(R.drawable.ic_camera, "Capture video"),
+        selectVideoButtonIconAndText = Pair(R.drawable.ic_gallery, "Select video from gallery"),
+        isCropEnable = true,
     ), onResult = object : OnResult {
-        override fun onResult(path: String?) {
-
-            val imageFilePath = path
-            val imageFileUri = File(path!!).toUri()
-
-            binding.imageView.apply {
-                setImageURI(imageFileUri)
+        override fun onResult(isImage: Boolean, path: String?) {
+            if (isImage) {
+                val imageFileUri = File(path!!).toUri()
+                binding.imageView.apply {
+                    visibility = View.VISIBLE
+                    setImageURI(imageFileUri)
+                }
+                binding.playerView.visibility = View.GONE
+            } else {
+                binding.imageView.visibility = View.GONE
+                binding.playerView.visibility = View.VISIBLE
+                intExo(path)
             }
         }
     }, onError = object : OnError {
@@ -89,17 +107,43 @@ class MainActivity : AppCompatActivity() {
             imagePicker.openImagePicker()
         }
     }
+
+    private fun intExo(mediaPath: String?) {
+        val mediaSource = ProgressiveMediaSource.Factory(mediaDataSourceFactory)
+            .createMediaSource(MediaItem.fromUri(File(mediaPath!!).toUri()))
+
+        val mediaSourceFactory = DefaultMediaSourceFactory(mediaDataSourceFactory)
+
+        simpleExoPlayer = ExoPlayer.Builder(this).setMediaSourceFactory(mediaSourceFactory).build()
+
+        simpleExoPlayer?.apply {
+            addMediaSource(mediaSource)
+            repeatMode = ExoPlayer.REPEAT_MODE_OFF
+            playWhenReady = true
+        }
+
+        binding.playerView.apply {
+            player = simpleExoPlayer
+            requestFocus()
+        }
+    }
+
+    public override fun onPause() {
+        super.onPause()
+        if (Util.SDK_INT <= 23) simpleExoPlayer?.release()
+    }
 }
 ```
 
 ## setPickerOptions
 ```bash
       PickerOptions(
-            captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Open Camera"),
-            selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Open Gallery"),
+            captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Capture image"),
+            selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Select image from gallery"),
+            captureVideoButtonIconAndText = Pair(R.drawable.ic_camera, "Capture video"),
+            selectVideoButtonIconAndText = Pair(R.drawable.ic_gallery, "Select video from gallery"),
+            
             bottomSheetBackgroundColor = R.color.white,
-            isCompressEnable = true,
-            isCropEnable = true,
             cropOptions = CropImageOptions(
                 cropShape = CropImageView.CropShape.RECTANGLE,
                 cornerShape = CropImageView.CropCornerShape.RECTANGLE,
@@ -107,7 +151,17 @@ class MainActivity : AppCompatActivity() {
                 guidelines = CropImageView.Guidelines.ON,
                 scaleType = CropImageView.ScaleType.FIT_CENTER,
                 ...
-                )
+                ),
+                  
+            isVideoPickEnable = true,
+            isPhotoPickEnable = true,
+            isCompressEnable = true,
+            isCropEnable = false,
+            
+            maxVideoSizeInMb = 5,
+            maxVideoDurationInMin = 2,
+
+            )
         )
 ```
 
@@ -121,6 +175,6 @@ Please adhere to this project's `code of conduct`.
 
 ## Authors
 
-- [@rkahir21](https://github.com/rkahir21)
+- [@rkahir21](https://github.com/rajesh-k-21)
 
 ## Happy Coding | Made with ❤ | Made in 🇮🇳 ... :)

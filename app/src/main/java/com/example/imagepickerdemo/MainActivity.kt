@@ -26,23 +26,32 @@ class MainActivity : AppCompatActivity() {
         DefaultDataSource.Factory(this)
     }
 
-    private val imagePicker = ImagePicker(this, PickerOptions(
-        captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Capture image"),
-        selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Select image from gallery"),
-        captureVideoButtonIconAndText = Pair(R.drawable.ic_camera, "Capture video"),
-        selectVideoButtonIconAndText = Pair(R.drawable.ic_gallery, "Select video from gallery"),
-        isCropEnable = true,
-    ), onResult = object : OnResult {
-        override fun onResult(isImage: Boolean, path: String?) {
-            if (isImage) {
-                val imageFileUri = File(path!!).toUri()
-                binding.imageView.apply {
-                    visibility = View.VISIBLE
-                    setImageURI(imageFileUri)
-                }
-                binding.playerView.visibility = View.GONE
-            } else {
-                binding.imageView.visibility = View.GONE
+    private val imagePicker = ImagePicker(
+        this, PickerOptions(
+            captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Capture image"),
+            selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Select image from gallery"),
+            captureVideoButtonIconAndText = Pair(R.drawable.ic_camera, "Capture video"),
+            selectVideoButtonIconAndText = Pair(R.drawable.ic_gallery, "Select video from gallery"),
+
+            isVideoPickEnable = true,
+            isPhotoPickEnable = true,
+            isCompressEnable = true,
+            isCropEnable = false,
+
+            maxVideoSizeInMb = 5,
+            maxVideoDurationInMin = 2,
+
+            ), onResult = object : OnResult {
+            override fun onResult(isImage: Boolean, path: String?) {
+                if (isImage) {
+                    val imageFileUri = File(path!!).toUri()
+                    binding.imageView.apply {
+                        visibility = View.VISIBLE
+                        setImageURI(imageFileUri)
+                    }
+                    binding.playerView.visibility = View.GONE
+                } else {
+                    binding.imageView.visibility = View.GONE
                 binding.playerView.visibility = View.VISIBLE
                 intExo(path)
             }
@@ -89,5 +98,4 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         if (Util.SDK_INT <= 23) simpleExoPlayer?.release()
     }
-
 }
