@@ -47,5 +47,4 @@ dependencies {
 
     implementation("androidx.activity:activity-ktx:1.6.1")
     implementation("com.google.android.exoplayer:exoplayer:2.18.7")
-
 }

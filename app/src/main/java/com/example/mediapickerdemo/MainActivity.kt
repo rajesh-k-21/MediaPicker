@@ -13,10 +13,10 @@ import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.util.Util
-import com.rktech.imagepicker.ImagePicker
-import com.rktech.imagepicker.interfaces.OnError
-import com.rktech.imagepicker.interfaces.OnResult
-import com.rktech.imagepicker.utils.PickerOptions
+import com.rktech.mediapicker.ImagePicker
+import com.rktech.mediapicker.interfaces.OnError
+import com.rktech.mediapicker.interfaces.OnResult
+import com.rktech.mediapicker.utils.PickerOptions
 import java.io.File
 
 class MainActivity : AppCompatActivity() {

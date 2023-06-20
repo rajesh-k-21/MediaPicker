@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application>
@@ -17,7 +19,7 @@
         </provider>
 
         <activity
-            android:name="com.rktech.imagepicker.cropper.CropImageActivity"
+            android:name="com.rktech.mediapicker.cropper.CropImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat"
             android:exported="true" />
