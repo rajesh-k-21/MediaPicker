@@ -1,4 +1,4 @@
-package com.example.imagepickerdemo
+package com.example.mediapickerdemo
 
 import org.junit.Test
 

@@ -9,4 +9,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ImagePickerDemo"
 include ':app'
-include ':ImagePicker'
+include ':MediaPicker'

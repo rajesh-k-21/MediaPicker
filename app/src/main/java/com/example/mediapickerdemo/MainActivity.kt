@@ -1,10 +1,11 @@
-package com.example.imagepickerdemo
+package com.example.mediapickerdemo
 
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import com.example.imagepickerdemo.R
 import com.example.imagepickerdemo.databinding.ActivityMainBinding
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
