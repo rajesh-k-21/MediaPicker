@@ -1,11 +1,11 @@
-# ImagePicker - Simple ImagePicker Library For Android
+# MediaPicker - Simple MediaPicker Library For Android
 
 This library is created to make easy image selection 
 
 ## Features
 
 - Easy to use
-- Image picker using camera & gallery
+- Image & Video picker using camera & gallery
 - Support Android 5.0 (Lollipop) to 13 (Tiramisu)
 
 ## How to Add
