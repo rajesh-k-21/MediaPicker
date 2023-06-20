@@ -58,17 +58,30 @@ class ImagePickerBottomSheet(
     private fun initUi() = with(binding) {
 
         imageButtonCamera.setOnClickListener { textViewCamera.performClick() }
-
         textViewCamera.setOnClickListener {
-            clickOnCamera()
+            clickOnCamera(0)
         }
 
         imageButtonGallery.setOnClickListener { textViewGallery.performClick() }
         textViewGallery.setOnClickListener {
-            clickOnGallery()
+            clickOnGallery(0)
+        }
+
+        imageButtonVideoCamera.setOnClickListener { textViewVideoCamera.performClick() }
+        textViewVideoCamera.setOnClickListener {
+            clickOnCamera(1)
+        }
+
+        imageButtonVideoGallery.setOnClickListener { textViewVideoGallery.performClick() }
+        textViewVideoGallery.setOnClickListener {
+            clickOnGallery(1)
         }
 
         pickerOptions.apply {
+
+            if (isPhotoPickEnable) groupPhoto.visibility = View.VISIBLE
+
+            if (isVideoPickEnable) groupVideo.visibility = View.VISIBLE
 
             bottomSheetBackgroundColor?.let {
                 constraintMain.backgroundTintList =
@@ -92,12 +105,49 @@ class ImagePickerBottomSheet(
                     textViewGallery.text = it
                 }
             }
+
+            captureVideoButtonIconAndText?.let { pair ->
+                pair.first?.let {
+                    imageButtonVideoCamera.setImageDrawable(ContextCompat.getDrawable(activity, it))
+                }
+                pair.second?.let {
+                    textViewVideoCamera.text = it
+                }
+            }
+
+            selectVideoButtonIconAndText?.let { pair ->
+                pair.first?.let {
+                    imageButtonVideoGallery.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            activity,
+                            it
+                        )
+                    )
+                }
+                pair.second?.let {
+                    textViewVideoGallery.text = it
+                }
+            }
+
+
         }
     }
 
-    private fun clickOnGallery() {
+    private fun clickOnGallery(type: Int) {
         if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
-            imagePicker.pickPhotoForTiramisu.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            if (type == 0) {
+                imagePicker.pickPhotoForTiramisu.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                    )
+                )
+            } else {
+                imagePicker.pickVideoForTiramisu.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.VideoOnly
+                    )
+                )
+            }
         } else {
             if (Build.VERSION.SDK_INT in 23..29) {
                 if (ActivityCompat.checkSelfPermission(
@@ -105,38 +155,43 @@ class ImagePickerBottomSheet(
                         Manifest.permission.READ_EXTERNAL_STORAGE
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    imagePicker.requestReadStorePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    imagePicker.requestReadStorePermission(type)
                 } else {
-                    openGallery()
+                    openGallery(type)
                 }
             } else {
-                openGallery()
+                openGallery(type)
             }
         }
     }
 
-    private fun clickOnCamera() {
+    private fun clickOnCamera(type: Int) {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (
-                ActivityCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.CAMERA
+            if (ActivityCompat.checkSelfPermission(
+                    requireActivity(), Manifest.permission.CAMERA
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                imagePicker.requestCameraPermission.launch(Manifest.permission.CAMERA)
+                imagePicker.requestCameraPermission(type)
             } else {
-                imagePicker.dispatchTakePictureIntent()
+                if (type == 0) imagePicker.dispatchTakePictureIntent() else imagePicker.dispatchTakeVideoIntent()
             }
-        } else
-            imagePicker.dispatchTakePictureIntent()
+        } else {
+            if (type == 0) imagePicker.dispatchTakePictureIntent() else imagePicker.dispatchTakeVideoIntent()
+        }
     }
 
-    internal fun openGallery() {
-        val galleryIntent =
-            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-                type = "image/*"
-            }
-        imagePicker.pickPhotoIntent.launch(galleryIntent)
+    internal fun openGallery(t: Int) {
+        val galleryIntent = Intent(
+            Intent.ACTION_PICK,
+            if (t == 0) MediaStore.Images.Media.EXTERNAL_CONTENT_URI else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        ).apply {
+            type = if (t == 0) "image/*" else "video/*"
+        }
+
+        if (t == 0)
+            imagePicker.pickPhotoIntent.launch(galleryIntent)
+        else
+            imagePicker.pickVideoIntent.launch(galleryIntent)
 
     }
 

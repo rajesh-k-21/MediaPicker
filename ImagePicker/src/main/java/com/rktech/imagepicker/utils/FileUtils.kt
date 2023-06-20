@@ -2,16 +2,25 @@ package com.rktech.imagepicker.utils
 
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.database.Cursor
 import android.database.DatabaseUtils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
+import android.provider.Settings
+import androidx.appcompat.app.AlertDialog
 import androidx.exifinterface.media.ExifInterface
 import com.rktech.imagepicker.BuildConfig.DEBUG
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,6 +39,21 @@ object FileUtils {
         return File.createTempFile(
             imageFileName, /* prefix */
             ".jpg", /* suffix */
+            storageDir  /* directory */
+        )
+    }
+
+    @Throws(IOException::class)
+    fun createVideoFile(activity: Activity?): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+        val imageFileName = "MP4_" + timeStamp + "_"
+
+        val storageDir = File(activity?.filesDir, "videos")
+        storageDir.mkdirs()
+
+        return File.createTempFile(
+            imageFileName, /* prefix */
+            ".mp4", /* suffix */
             storageDir  /* directory */
         )
     }
@@ -433,4 +457,42 @@ object FileUtils {
     private fun isGooglePhotosUri(uri: Uri): Boolean {
         return "com.google.android.apps.photos.content" == uri.authority
     }
+}
+
+fun Activity.openPermissionSetting() {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+        val adb: AlertDialog.Builder = AlertDialog.Builder(this)
+        adb.setTitle("App permissions")
+        adb.setMessage("Click on \"OK,\" and the app will redirect you to the app settings. Next, please click on \"Permissions\" and kindly allow all.")
+        adb.setPositiveButton("ok", DialogInterface.OnClickListener { dialogInterface, i ->
+            dialogInterface.dismiss()
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", packageName, null)
+            intent.data = uri
+            startActivity(intent)
+        })
+        adb.setNegativeButton("cancel") { dialogInterface, i ->
+            dialogInterface.dismiss()
+        }
+        adb.show()
+    }
+}
+
+fun getFileSize(file: File): Long {
+    val channel = RandomAccessFile(file, "r").channel
+    return channel.use { channel ->
+        channel.size()
+    }
+}
+
+fun getVideoDuration(filePath: String, onSuccess: (Long) -> Unit) {
+
+    val retriever = MediaMetadataRetriever()
+    retriever.setDataSource(filePath)
+    val durationStr =
+        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+    val duration = durationStr?.toLong() ?: 0
+    retriever.release()
+
+    onSuccess.invoke(duration)
 }
