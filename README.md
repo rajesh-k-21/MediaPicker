@@ -23,7 +23,7 @@ Project level gradle file
 App level gradle file
 ```bash
 	dependencies {
-	        implementation 'com.github.rajesh-k-21:MediaPicker:1.2'
+	        implementation 'com.github.rajesh-k-21:MediaPicker:1.5'
 	}
 ```
 
