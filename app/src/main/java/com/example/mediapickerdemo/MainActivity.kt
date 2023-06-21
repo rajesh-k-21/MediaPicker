@@ -5,15 +5,15 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import com.example.imagepickerdemo.R
-import com.example.imagepickerdemo.databinding.ActivityMainBinding
+import com.example.mediapicker.R
+import com.example.mediapicker.databinding.ActivityMainBinding
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.util.Util
-import com.rktech.mediapicker.ImagePicker
+import com.rktech.mediapicker.MediaPicker
 import com.rktech.mediapicker.interfaces.OnError
 import com.rktech.mediapicker.interfaces.OnResult
 import com.rktech.mediapicker.utils.PickerOptions
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         DefaultDataSource.Factory(this)
     }
 
-    private val imagePicker = ImagePicker(
+    private val mediaPicker = MediaPicker(
         this, PickerOptions(
             captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Capture image"),
             selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Select image from gallery"),
@@ -38,10 +38,6 @@ class MainActivity : AppCompatActivity() {
             isPhotoPickEnable = true,
             isCompressEnable = true,
             isCropEnable = false,
-
-            maxVideoSizeInMb = 5,
-            maxVideoDurationInMin = 2,
-
             ), onResult = object : OnResult {
             override fun onResult(isImage: Boolean, path: String?) {
                 if (isImage) {
@@ -71,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.buttonImage.setOnClickListener {
-            imagePicker.openImagePicker()
+            mediaPicker.openMediaPicker()
         }
     }
 

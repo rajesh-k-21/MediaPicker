@@ -30,7 +30,7 @@ object FileUtils {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_"
 
-        val storageDir = File(activity?.filesDir, "images")
+        val storageDir = File(activity?.filesDir, "media")
         storageDir.mkdirs()
 
         return File.createTempFile(
@@ -45,7 +45,7 @@ object FileUtils {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
         val imageFileName = "MP4_" + timeStamp + "_"
 
-        val storageDir = File(activity?.filesDir, "videos")
+        val storageDir = File(activity?.filesDir, "media")
         storageDir.mkdirs()
 
         return File.createTempFile(

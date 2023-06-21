@@ -4,7 +4,7 @@ import android.Manifest
 
 object Const {
 
-    const val TAG = "com.rktech.imagepicker"
+    const val TAG = "com.rktech.mediapicker"
 
     var AUTHORITY = ""
 

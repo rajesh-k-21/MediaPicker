@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.imagepickerdemo'
+    namespace 'com.example.mediapicker'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.imagepickerdemo"
+        applicationId "com.example.mediapicker"
         minSdk 21
         targetSdk 33
         versionCode 1
@@ -40,7 +40,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.0-rc01'
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation project(path: ':MediaPicker')
+    implementation project(path: ':mediapicker')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'

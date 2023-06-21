@@ -17,29 +17,29 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.rktech.mediapicker.ImagePicker
+import com.rktech.mediapicker.MediaPicker
 import com.rktech.mediapicker.R
 import com.rktech.mediapicker.cropper.CropImageContractOptions
 import com.rktech.mediapicker.cropper.CropImageOptions
-import com.rktech.mediapicker.databinding.ImagePickerBottomSheetBinding
+import com.rktech.mediapicker.databinding.MediaPickerBottomSheetBinding
 import com.rktech.mediapicker.utils.Const
 import com.rktech.mediapicker.utils.PickerOptions
 
-class ImagePickerBottomSheet(
+class MediaPickerBottomSheet(
     private val activity: ComponentActivity,
     private val pickerOptions: PickerOptions,
-    private val imagePicker: ImagePicker,
+    private val mediaPicker: MediaPicker,
 
     ) : BottomSheetDialogFragment() {
 
-    private lateinit var binding: ImagePickerBottomSheetBinding
+    private lateinit var binding: MediaPickerBottomSheetBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ImagePickerBottomSheetBinding.inflate(inflater)
+        binding = MediaPickerBottomSheetBinding.inflate(inflater)
         return binding.root
     }
 
@@ -136,13 +136,13 @@ class ImagePickerBottomSheet(
     private fun clickOnGallery(type: Int) {
         if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
             if (type == 0) {
-                imagePicker.pickPhotoForTiramisu.launch(
+                mediaPicker.pickPhotoForTiramisu.launch(
                     PickVisualMediaRequest(
                         ActivityResultContracts.PickVisualMedia.ImageOnly
                     )
                 )
             } else {
-                imagePicker.pickVideoForTiramisu.launch(
+                mediaPicker.pickVideoForTiramisu.launch(
                     PickVisualMediaRequest(
                         ActivityResultContracts.PickVisualMedia.VideoOnly
                     )
@@ -155,7 +155,7 @@ class ImagePickerBottomSheet(
                         Manifest.permission.READ_EXTERNAL_STORAGE
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    imagePicker.requestReadStorePermission(type)
+                    mediaPicker.requestReadStorePermission(type)
                 } else {
                     openGallery(type)
                 }
@@ -171,12 +171,12 @@ class ImagePickerBottomSheet(
                     requireActivity(), Manifest.permission.CAMERA
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                imagePicker.requestCameraPermission(type)
+                mediaPicker.requestCameraPermission(type)
             } else {
-                if (type == 0) imagePicker.dispatchTakePictureIntent() else imagePicker.dispatchTakeVideoIntent()
+                if (type == 0) mediaPicker.dispatchTakePictureIntent() else mediaPicker.dispatchTakeVideoIntent()
             }
         } else {
-            if (type == 0) imagePicker.dispatchTakePictureIntent() else imagePicker.dispatchTakeVideoIntent()
+            if (type == 0) mediaPicker.dispatchTakePictureIntent() else mediaPicker.dispatchTakeVideoIntent()
         }
     }
 
@@ -189,14 +189,14 @@ class ImagePickerBottomSheet(
         }
 
         if (t == 0)
-            imagePicker.pickPhotoIntent.launch(galleryIntent)
+            mediaPicker.pickPhotoIntent.launch(galleryIntent)
         else
-            imagePicker.pickVideoIntent.launch(galleryIntent)
+            mediaPicker.pickVideoIntent.launch(galleryIntent)
 
     }
 
     internal fun launchImageCrop(fileUri: Uri) {
-        imagePicker.cropImageResult.launch(
+        mediaPicker.cropImageResult.launch(
             CropImageContractOptions(
                 uri = fileUri,
                 cropImageOptions = CropImageOptions(),

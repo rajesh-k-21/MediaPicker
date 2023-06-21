@@ -23,7 +23,7 @@ Project level gradle file
 App level gradle file
 ```bash
 	dependencies {
-	        implementation 'com.github.rajesh-k-21:MediaPicker:1.1'
+	        implementation 'com.github.rajesh-k-21:MediaPicker:1.2'
 	}
 ```
 
@@ -32,7 +32,7 @@ App level gradle file
 How to use this amazing lib and save your time
 
 ```bash
-    private val imagePicker = ImagePicker(this, PickerOptions(
+    private val mediaPicker = MediaPicker(this, PickerOptions(
         captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Capture image"),
         selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Select image from gallery"),
         captureVideoButtonIconAndText = Pair(R.drawable.ic_camera, "Capture video"),
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         DefaultDataSource.Factory(this)
     }
 
-    private val imagePicker = ImagePicker(this, PickerOptions(
+    private val mediaPicker = MediaPicker(this, PickerOptions(
         captureImageButtonIconAndText = Pair(R.drawable.ic_camera, "Capture image"),
         selectImageButtonIconAndText = Pair(R.drawable.ic_gallery, "Select image from gallery"),
         captureVideoButtonIconAndText = Pair(R.drawable.ic_camera, "Capture video"),
@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.buttonImage.setOnClickListener {
-            imagePicker.openImagePicker()
+            mediaPicker.openMediaPicker()
         }
     }
 

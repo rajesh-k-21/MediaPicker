@@ -17,7 +17,7 @@ import com.rktech.mediapicker.cropper.CropImage
 import com.rktech.mediapicker.cropper.CropImageContract
 import com.rktech.mediapicker.interfaces.OnError
 import com.rktech.mediapicker.interfaces.OnResult
-import com.rktech.mediapicker.ui.ImagePickerBottomSheet
+import com.rktech.mediapicker.ui.MediaPickerBottomSheet
 import com.rktech.mediapicker.utils.FileUtils
 import com.rktech.mediapicker.utils.PickerOptions
 import com.rktech.mediapicker.utils.getFileSize
@@ -26,7 +26,7 @@ import com.rktech.mediapicker.utils.openPermissionSetting
 import java.io.File
 import java.io.IOException
 
-class ImagePicker(
+class MediaPicker(
     private val activity: ComponentActivity,
     private val pickerOptions: PickerOptions,
     private val onResult: OnResult,
@@ -39,7 +39,7 @@ class ImagePicker(
     private var isRequestCameraPermissionType: Int = 0
     private var isRequestReadStorePermissionType: Int = 0
 
-    private var imagePickerBottomSheet: ImagePickerBottomSheet? = null
+    private var mediaPickerBottomSheet: MediaPickerBottomSheet? = null
 
     private val requestCameraPermission = activity.registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -51,7 +51,7 @@ class ImagePicker(
                 dispatchTakeVideoIntent()
         } else {
             activity.openPermissionSetting()
-            imagePickerBottomSheet?.dismiss()
+            mediaPickerBottomSheet?.dismiss()
         }
     }
 
@@ -59,10 +59,10 @@ class ImagePicker(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            imagePickerBottomSheet?.openGallery(isRequestReadStorePermissionType)
+            mediaPickerBottomSheet?.openGallery(isRequestReadStorePermissionType)
         } else {
             activity.openPermissionSetting()
-            imagePickerBottomSheet?.dismiss()
+            mediaPickerBottomSheet?.dismiss()
         }
     }
 
@@ -80,7 +80,7 @@ class ImagePicker(
         activity.registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 if (pickerOptions.isCropEnable) {
-                    imagePickerBottomSheet?.launchImageCrop(uri)
+                    mediaPickerBottomSheet?.launchImageCrop(uri)
                 } else
                     try {
                         captureImagePath = FileUtils.getFile(activity, uri)?.absolutePath
@@ -88,12 +88,12 @@ class ImagePicker(
                             captureImagePath =
                                 FileUtils.compressImage(captureImagePath, captureImagePath!!)
                         onResult.onResult(true, captureImagePath)
-                        imagePickerBottomSheet?.dismiss()
+                        mediaPickerBottomSheet?.dismiss()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
             } else {
-                Log.e("ImagePicker", "No media selected")
+                Log.e("MediaPicker", "No media selected")
             }
         }
 
@@ -110,13 +110,13 @@ class ImagePicker(
 
                     processingResultVideo(captureVideoPath)
 
-                    imagePickerBottomSheet?.dismiss()
+                    mediaPickerBottomSheet?.dismiss()
 
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             } else {
-                Log.e("ImagePicker", "No media selected")
+                Log.e("MediaPicker", "No media selected")
             }
         }
 
@@ -124,7 +124,7 @@ class ImagePicker(
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && captureImagePath != null) {
                 if (pickerOptions.isCropEnable) {
-                    imagePickerBottomSheet?.launchImageCrop(Uri.fromFile(File(captureImagePath!!)))
+                    mediaPickerBottomSheet?.launchImageCrop(Uri.fromFile(File(captureImagePath!!)))
                 } else
                     try {
 
@@ -143,13 +143,13 @@ class ImagePicker(
                         )
 
                         onResult.onResult(true, captureImagePath)
-                        imagePickerBottomSheet?.dismiss()
+                        mediaPickerBottomSheet?.dismiss()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
             } else {
                 onError.onError("Error code :- ${it.resultCode}")
-                imagePickerBottomSheet?.dismiss()
+                mediaPickerBottomSheet?.dismiss()
             }
         }
 
@@ -158,22 +158,17 @@ class ImagePicker(
             if (it.resultCode == Activity.RESULT_OK && captureVideoPath != null) {
                 try {
 
-                    /* val fileIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-                     activity.sendBroadcast(fileIntent.apply {
-                         data = Uri.fromFile(File(captureVideoPath!!))
-                     })*/
-
                     val file = File(captureVideoPath!!)
                     MediaScannerConnection.scanFile(activity, arrayOf(file.toString()), null, null)
 
                     onResult.onResult(false, captureVideoPath)
-                    imagePickerBottomSheet?.dismiss()
+                    mediaPickerBottomSheet?.dismiss()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             } else {
                 onError.onError("Error code :- ${it.resultCode}")
-                imagePickerBottomSheet?.dismiss()
+                mediaPickerBottomSheet?.dismiss()
             }
         }
 
@@ -181,7 +176,7 @@ class ImagePicker(
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.data?.data != null) {
                 if (pickerOptions.isCropEnable) {
-                    imagePickerBottomSheet?.launchImageCrop(it.data?.data!!)
+                    mediaPickerBottomSheet?.launchImageCrop(it.data?.data!!)
                 } else {
                     try {
                         captureImagePath =
@@ -190,7 +185,7 @@ class ImagePicker(
                             captureImagePath =
                                 FileUtils.compressImage(captureImagePath, captureImagePath!!)
                         onResult.onResult(true, captureImagePath)
-                        imagePickerBottomSheet?.dismiss()
+                        mediaPickerBottomSheet?.dismiss()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -211,7 +206,7 @@ class ImagePicker(
 
                     processingResultVideo(captureVideoPath)
 
-                    imagePickerBottomSheet?.dismiss()
+                    mediaPickerBottomSheet?.dismiss()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -238,7 +233,7 @@ class ImagePicker(
 
                         onResult.onResult(true, captureImagePath)
 
-                        imagePickerBottomSheet?.dismiss()
+                        mediaPickerBottomSheet?.dismiss()
 
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -247,7 +242,7 @@ class ImagePicker(
                 }
                 result is CropImage.CancelledResult -> {
                     onError.onError("cropping image was cancelled by the user")
-                    imagePickerBottomSheet?.dismiss()
+                    mediaPickerBottomSheet?.dismiss()
                 }
                 else -> {
                     onError.onError("cropping image failed")
@@ -258,13 +253,13 @@ class ImagePicker(
 
 
     init {
-        imagePickerBottomSheet = ImagePickerBottomSheet(activity, pickerOptions, this)
+        mediaPickerBottomSheet = MediaPickerBottomSheet(activity, pickerOptions, this)
     }
 
-    fun openImagePicker() {
-        imagePickerBottomSheet?.show(
+    fun openMediaPicker() {
+        mediaPickerBottomSheet?.show(
             (activity as AppCompatActivity).supportFragmentManager,
-            imagePickerBottomSheet?.tag
+            mediaPickerBottomSheet?.tag
         )
     }
 
@@ -299,12 +294,12 @@ class ImagePicker(
 
                 val resInfoList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     activity.packageManager.queryIntentActivities(
-                        Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER),
+                        takePictureIntent,
                         PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
                     )
                 } else {
                     activity.packageManager.queryIntentActivities(
-                        Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER),
+                        takePictureIntent,
                         PackageManager.GET_META_DATA
                     )
                 }
@@ -326,11 +321,13 @@ class ImagePicker(
     internal fun dispatchTakeVideoIntent() {
         var videoURI: Uri? = null
         val takeVideoIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+
         if (takeVideoIntent.resolveActivity(activity.packageManager) != null) {
             var videoFile: File? = null
             try {
 
                 videoFile = FileUtils.createVideoFile(activity)
+
                 captureVideoPath = videoFile.absolutePath
 
                 videoURI = FileProvider.getUriForFile(
@@ -353,12 +350,12 @@ class ImagePicker(
 
                 val resInfoList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     activity.packageManager.queryIntentActivities(
-                        Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER),
+                        takeVideoIntent,
                         PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
                     )
                 } else {
                     activity.packageManager.queryIntentActivities(
-                        Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER),
+                        takeVideoIntent,
                         PackageManager.GET_META_DATA
                     )
                 }
@@ -374,6 +371,7 @@ class ImagePicker(
                 captureVideoIntent.launch(takeVideoIntent)
             }
         }
+
     }
 
     private fun processingResultVideo(captureVideoPath: String?) {
@@ -381,7 +379,6 @@ class ImagePicker(
             pickerOptions.maxVideoSizeInMb == 0 && pickerOptions.maxVideoDurationInMin == 0 -> {
                 onResult.onResult(false, captureVideoPath)
             }
-
             pickerOptions.maxVideoSizeInMb != 0 && pickerOptions.maxVideoDurationInMin != 0 -> {
                 if (getFileSize(File(captureVideoPath!!)) > pickerOptions.maxVideoSizeInMb * 1024 * 1024) {
                     onError.onError("The selected video exceeds the maximum file size of ${pickerOptions.maxVideoSizeInMb} MB.")
@@ -395,7 +392,6 @@ class ImagePicker(
                     }
                 }
             }
-
             pickerOptions.maxVideoSizeInMb != 0 -> {
                 if (getFileSize(File(captureVideoPath!!)) > pickerOptions.maxVideoSizeInMb * 1024 * 1024) {
                     onError.onError("The selected video exceeds the maximum file size of ${pickerOptions.maxVideoSizeInMb} MB.")
@@ -403,7 +399,6 @@ class ImagePicker(
                     onResult.onResult(false, captureVideoPath)
                 }
             }
-
             else -> {
                 getVideoDuration(captureVideoPath!!) { videoDuration ->
                     if (videoDuration > pickerOptions.maxVideoDurationInMin * 60 * 1000) {

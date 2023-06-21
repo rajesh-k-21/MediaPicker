@@ -27,4 +27,10 @@
     <files-path
         name="images"
         path="." />
+    <files-path
+        name="videos"
+        path="." />
+    <files-path
+        name="media"
+        path="." />
 </paths>
